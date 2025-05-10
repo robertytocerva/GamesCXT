@@ -1,9 +1,14 @@
 package JUEGO3;
 
+import API.*;
+import retrofit2.Call;
+import retrofit2.Response;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Vector;
@@ -19,8 +24,9 @@ public class Memorama extends JFrame {
     private int paresEncontrados = 0;
     private JButton primero = null;
     private int total;
+    private int idNino = -1;
 
-    
+
     private int cursorFila = 0;
     private int cursorColumna = 0;
     private final int columnas = 6;
@@ -71,121 +77,150 @@ public class Memorama extends JFrame {
 
         setFocusable(true);
         SwingUtilities.invokeLater(() -> requestFocusInWindow());
-        
+
         ReproductorMusica musica = new ReproductorMusica();
-        musica.reproducir("imagenes/sonido.wav"); 
+        musica.reproducir("imagenes/sonido.wav");
     }
 
     private void solicitarCredenciales() {
-    JDialog dialogo = new JDialog(this, "Inicio de sesión - C X T", true);
-    dialogo.setSize(850, 600);
-    dialogo.setLocationRelativeTo(this);
-    dialogo.setLayout(new BorderLayout());
+        JDialog dialogo = new JDialog(this, "Inicio de sesión - C X T", true);
+        dialogo.setSize(850, 600);
+        dialogo.setLocationRelativeTo(this);
+        dialogo.setLayout(new BorderLayout());
 
-    Color azulFuerte = new Color(30, 60, 120);
-    Color blanco = Color.WHITE;
+        Color azulFuerte = new Color(30, 60, 120);
+        Color blanco = Color.WHITE;
 
-    JPanel panelPrincipal = new JPanel(new BorderLayout());
-    panelPrincipal.setBackground(azulFuerte);
+        JPanel panelPrincipal = new JPanel(new BorderLayout());
+        panelPrincipal.setBackground(azulFuerte);
 
-    // Imagen lateral
-    ImageIcon originalIcon = new ImageIcon("imagenes/fondo.png");
-    Image imagenEscalada = originalIcon.getImage().getScaledInstance(500, 500, Image.SCALE_SMOOTH);
-    JLabel imagen = new JLabel(new ImageIcon(imagenEscalada));
-    imagen.setPreferredSize(new Dimension(400, 600));
-    panelPrincipal.add(imagen, BorderLayout.WEST);
+        // Imagen lateral
+        ImageIcon originalIcon = new ImageIcon("imagenes/fondo.png");
+        Image imagenEscalada = originalIcon.getImage().getScaledInstance(500, 500, Image.SCALE_SMOOTH);
+        JLabel imagen = new JLabel(new ImageIcon(imagenEscalada));
+        imagen.setPreferredSize(new Dimension(400, 600));
+        panelPrincipal.add(imagen, BorderLayout.WEST);
 
-    // Formulario
-    JPanel panelFormulario = new JPanel();
-    panelFormulario.setLayout(new BoxLayout(panelFormulario, BoxLayout.Y_AXIS));
-    panelFormulario.setBorder(BorderFactory.createEmptyBorder(20, 30, 20, 30));
-    panelFormulario.setBackground(azulFuerte);
+        // Formulario
+        JPanel panelFormulario = new JPanel();
+        panelFormulario.setLayout(new BoxLayout(panelFormulario, BoxLayout.Y_AXIS));
+        panelFormulario.setBorder(BorderFactory.createEmptyBorder(20, 30, 20, 30));
+        panelFormulario.setBackground(azulFuerte);
 
-    JLabel titulo = new JLabel("¡Bienvenido al juego del Memorama!");
-    titulo.setAlignmentX(Component.CENTER_ALIGNMENT);
-    titulo.setFont(new Font("Arial", Font.BOLD, 20));
-    titulo.setForeground(blanco);
-    panelFormulario.add(titulo);
-    panelFormulario.add(Box.createVerticalStrut(20));
+        JLabel titulo = new JLabel("¡Bienvenido al juego del Memorama!");
+        titulo.setAlignmentX(Component.CENTER_ALIGNMENT);
+        titulo.setFont(new Font("Arial", Font.BOLD, 20));
+        titulo.setForeground(blanco);
+        panelFormulario.add(titulo);
+        panelFormulario.add(Box.createVerticalStrut(20));
 
-    // Instrucción previa a los campos
-    JLabel textoInicio = new JLabel("Ingresa tu correo y contraseña para comenzar.");
-    textoInicio.setAlignmentX(Component.CENTER_ALIGNMENT);
-    textoInicio.setFont(new Font("Arial", Font.PLAIN, 14));
-    textoInicio.setForeground(blanco);
-    panelFormulario.add(textoInicio);
-    panelFormulario.add(Box.createVerticalStrut(20));
+        // Instrucción previa a los campos
+        JLabel textoInicio = new JLabel("Ingresa tu correo y contraseña para comenzar.");
+        textoInicio.setAlignmentX(Component.CENTER_ALIGNMENT);
+        textoInicio.setFont(new Font("Arial", Font.PLAIN, 14));
+        textoInicio.setForeground(blanco);
+        panelFormulario.add(textoInicio);
+        panelFormulario.add(Box.createVerticalStrut(20));
 
-    JTextField correoField = new JTextField();
-    correoField.setMaximumSize(new Dimension(250, 30));
-    correoField.setBackground(blanco);
-    correoField.setForeground(Color.BLACK);
+        JTextField correoField = new JTextField();
+        correoField.setMaximumSize(new Dimension(250, 30));
+        correoField.setBackground(blanco);
+        correoField.setForeground(Color.BLACK);
 
-    JPasswordField contrasenaField = new JPasswordField();
-    contrasenaField.setMaximumSize(new Dimension(250, 30));
-    contrasenaField.setBackground(blanco);
-    contrasenaField.setForeground(Color.BLACK);
+        JPasswordField contrasenaField = new JPasswordField();
+        contrasenaField.setMaximumSize(new Dimension(250, 30));
+        contrasenaField.setBackground(blanco);
+        contrasenaField.setForeground(Color.BLACK);
 
-    JLabel correoLabel = new JLabel("Correo:");
-    correoLabel.setForeground(blanco);
-    correoLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        JLabel correoLabel = new JLabel("Correo:");
+        correoLabel.setForeground(blanco);
+        correoLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-    JLabel contrasenaLabel = new JLabel("Contraseña:");
-    contrasenaLabel.setForeground(blanco);
-    contrasenaLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        JLabel contrasenaLabel = new JLabel("Contraseña:");
+        contrasenaLabel.setForeground(blanco);
+        contrasenaLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-    panelFormulario.add(correoLabel);
-    panelFormulario.add(correoField);
-    panelFormulario.add(Box.createVerticalStrut(10));
-    panelFormulario.add(contrasenaLabel);
-    panelFormulario.add(contrasenaField);
-    panelFormulario.add(Box.createVerticalStrut(100));
+        panelFormulario.add(correoLabel);
+        panelFormulario.add(correoField);
+        panelFormulario.add(Box.createVerticalStrut(10));
+        panelFormulario.add(contrasenaLabel);
+        panelFormulario.add(contrasenaField);
+        panelFormulario.add(Box.createVerticalStrut(100));
 
-    JButton btnContinuar = new JButton("Continuar");
-    btnContinuar.setAlignmentX(Component.CENTER_ALIGNMENT);
-    btnContinuar.setBackground(blanco);
-    btnContinuar.setForeground(azulFuerte);
-    btnContinuar.setFocusPainted(false);
-    panelFormulario.add(btnContinuar);
+        JButton btnContinuar = new JButton("Continuar");
+        btnContinuar.setAlignmentX(Component.CENTER_ALIGNMENT);
+        btnContinuar.setBackground(blanco);
+        btnContinuar.setForeground(azulFuerte);
+        btnContinuar.setFocusPainted(false);
+        panelFormulario.add(btnContinuar);
 
-    // Instrucciones debajo del botón con espacio
-    panelFormulario.add(Box.createVerticalStrut(30));
-    JLabel instrucciones = new JLabel("<html><div style='text-align:center;'>" +
-        "Presiona <b>Q</b> para seleccionar una carta.<br>" +
-        "Usa <b>W, A, S, D</b> para moverte.<br>" +
-        "Presiona <b>E</b> para finalizar el juego." +
-        "</div></html>");
-instrucciones.setAlignmentX(Component.CENTER_ALIGNMENT);
-instrucciones.setFont(new Font("Arial", Font.PLAIN, 14));
-instrucciones.setForeground(Color.WHITE);
-panelFormulario.add(instrucciones);
+        // Instrucciones debajo del botón con espacio
+        panelFormulario.add(Box.createVerticalStrut(30));
+        JLabel instrucciones = new JLabel("<html><div style='text-align:center;'>" +
+                "Presiona <b>Q</b> para seleccionar una carta.<br>" +
+                "Usa <b>W, A, S, D</b> para moverte.<br>" +
+                "Presiona <b>E</b> para finalizar el juego." +
+                "</div></html>");
+        instrucciones.setAlignmentX(Component.CENTER_ALIGNMENT);
+        instrucciones.setFont(new Font("Arial", Font.PLAIN, 14));
+        instrucciones.setForeground(Color.WHITE);
+        panelFormulario.add(instrucciones);
 
-    panelPrincipal.add(panelFormulario, BorderLayout.CENTER);
-    dialogo.add(panelPrincipal);
+        panelPrincipal.add(panelFormulario, BorderLayout.CENTER);
+        dialogo.add(panelPrincipal);
 
-    Runnable intentarContinuar = () -> {
-        correoTutor = correoField.getText().trim();
-        contrasenaTutor = new String(contrasenaField.getPassword()).trim();
+        Runnable intentarContinuar = () -> {
+            correoTutor = correoField.getText().trim();
+            contrasenaTutor = new String(contrasenaField.getPassword()).trim();
 
-        if (correoTutor.isEmpty() || contrasenaTutor.isEmpty()) {
-            JOptionPane.showMessageDialog(dialogo, "Por favor, llena ambos campos.");
-        } else {
-            inicioJuego = System.currentTimeMillis();
-            dialogo.dispose();
+            if (correoTutor.isEmpty() || contrasenaTutor.isEmpty()) {
+                JOptionPane.showMessageDialog(dialogo, "Por favor, llena ambos campos.");
+                return;
+            }
+
+            ApiService api = RetrofitClient.getApiService();
+
+            // 1. Login
+            LoginRequest login = new LoginRequest(correoTutor, contrasenaTutor);
+            Call<LoginResponse> llamadaLogin = api.login(login);
+
+            try {
+                Response<LoginResponse> respuestaLogin = llamadaLogin.execute();
+                if (respuestaLogin.isSuccessful() && respuestaLogin.body() != null && respuestaLogin.body().isSuccess()) {
+
+                    // 2. Buscar niño
+                    BuscarNinoRequest buscarRequest = new BuscarNinoRequest(correoTutor);
+                    Call<BuscarNinoResponse> llamadaNino = api.buscarNinoId(buscarRequest);
+                    Response<BuscarNinoResponse> respuestaNino = llamadaNino.execute();
+
+                    if (respuestaNino.isSuccessful() && respuestaNino.body() != null) {
+                        idNino = respuestaNino.body().getId_nino();
+                        System.out.println("ID del niño: " + idNino);
+                        inicioJuego = System.currentTimeMillis();
+                        dialogo.dispose();
+                    } else {
+                        JOptionPane.showMessageDialog(dialogo, "No se encontró un niño asociado a este correo.");
+                    }
+
+                } else {
+                    JOptionPane.showMessageDialog(dialogo, "Credenciales incorrectas. Intenta nuevamente.");
+                }
+            } catch (IOException ex) {
+                ex.printStackTrace();
+                JOptionPane.showMessageDialog(dialogo, "Error al conectar con el servidor.");
+            }
+        };
+
+        btnContinuar.addActionListener(e -> intentarContinuar.run());
+
+        dialogo.setVisible(true);
+
+        if (correoTutor == null || contrasenaTutor == null ||
+                correoTutor.isEmpty() || contrasenaTutor.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "No se ingresaron datos. El juego no puede continuar.");
+            System.exit(0);
         }
-    };
-
-    btnContinuar.addActionListener(e -> intentarContinuar.run());
-
-    dialogo.setVisible(true);
-
-    if (correoTutor == null || contrasenaTutor == null ||
-            correoTutor.isEmpty() || contrasenaTutor.isEmpty()) {
-        JOptionPane.showMessageDialog(this, "No se ingresaron datos. El juego no puede continuar.");
-        System.exit(0);
     }
-}
-
 
 
     private void cargarImagenesDesdeCarpetaExterna() {
@@ -194,13 +229,13 @@ panelFormulario.add(instrucciones);
 
         if (nivelActual == 1) {
             nombres = new String[]{
-                "cebra.png", "chango.png", "cinco.png", "elefante.png", "fresa.png", "leon.png",
-                "pera.png", "plata.png", "rino.png", "sandia.png", "tigre.png", "uva.png"
+                    "cebra.png", "chango.png", "cinco.png", "elefante.png", "fresa.png", "leon.png",
+                    "pera.png", "plata.png", "rino.png", "sandia.png", "tigre.png", "uva.png"
             };
         } else if (nivelActual == 2) {
             nombres = new String[]{
-                "mk.png", "gofy.png", "ariel.png", "mulan.png", "moana.png", "ana.png",
-                "dum.png", "tarzan.png", "villa.png", "hakuna.png", "campanita.png", "simba.png"
+                    "mk.png", "gofy.png", "ariel.png", "mulan.png", "moana.png", "ana.png",
+                    "dum.png", "tarzan.png", "villa.png", "hakuna.png", "campanita.png", "simba.png"
             };
         } else {
             nombres = new String[0];
@@ -289,62 +324,63 @@ panelFormulario.add(instrucciones);
             timer.start();
         }
     }
-private void verificarPares(int segundoIndice) {
-    int primeroIndice = java.util.Arrays.asList(botones).indexOf(primero);
 
-    if (indices[primeroIndice] == indices[segundoIndice]) {
-        encontrada[primeroIndice] = true;
-        encontrada[segundoIndice] = true;
-        paresEncontrados++;
-        puntajeFinal += 10;
+    private void verificarPares(int segundoIndice) {
+        int primeroIndice = java.util.Arrays.asList(botones).indexOf(primero);
 
-        if (paresEncontrados == total / 2) {
-            nivelAlcanzado = nivelActual;
-            int siguienteNivel = nivelActual + 1;
+        if (indices[primeroIndice] == indices[segundoIndice]) {
+            encontrada[primeroIndice] = true;
+            encontrada[segundoIndice] = true;
+            paresEncontrados++;
+            puntajeFinal += 10;
 
-            File carpetaSiguiente = new File("imagenes/nivel" + siguienteNivel);
-            if (carpetaSiguiente.exists() && carpetaSiguiente.isDirectory()) {
-                // Mostrar aviso e iniciar nivel al presionar tecla
-                JDialog dialog = new JDialog(this, "Nivel Completado", true);
-                dialog.setSize(400, 150);
-                dialog.setLocationRelativeTo(this);
-                dialog.setLayout(new BorderLayout());
+            if (paresEncontrados == total / 2) {
+                nivelAlcanzado = nivelActual;
+                int siguienteNivel = nivelActual + 1;
 
-                JLabel mensaje = new JLabel("<html><center>¡Nivel " + nivelActual + " completado!<br>" +
-                        "Presiona cualquier tecla para continuar al siguiente nivel.</center></html>", SwingConstants.CENTER);
-                mensaje.setFont(new Font("Arial", Font.PLAIN, 16));
-                dialog.add(mensaje, BorderLayout.CENTER);
+                File carpetaSiguiente = new File("imagenes/nivel" + siguienteNivel);
+                if (carpetaSiguiente.exists() && carpetaSiguiente.isDirectory()) {
+                    // Mostrar aviso e iniciar nivel al presionar tecla
+                    JDialog dialog = new JDialog(this, "Nivel Completado", true);
+                    dialog.setSize(400, 150);
+                    dialog.setLocationRelativeTo(this);
+                    dialog.setLayout(new BorderLayout());
 
-                dialog.addKeyListener(new KeyAdapter() {
-                    @Override
-                    public void keyPressed(KeyEvent e) {
-                        int tecla = e.getKeyCode();
-                        if (tecla == KeyEvent.VK_Q || tecla == KeyEvent.VK_W || tecla == KeyEvent.VK_E ||
-                            tecla == KeyEvent.VK_A || tecla == KeyEvent.VK_S || tecla == KeyEvent.VK_D) {
-                            dialog.dispose();
+                    JLabel mensaje = new JLabel("<html><center>¡Nivel " + nivelActual + " completado!<br>" +
+                            "Presiona cualquier tecla para continuar al siguiente nivel.</center></html>", SwingConstants.CENTER);
+                    mensaje.setFont(new Font("Arial", Font.PLAIN, 16));
+                    dialog.add(mensaje, BorderLayout.CENTER);
+
+                    dialog.addKeyListener(new KeyAdapter() {
+                        @Override
+                        public void keyPressed(KeyEvent e) {
+                            int tecla = e.getKeyCode();
+                            if (tecla == KeyEvent.VK_Q || tecla == KeyEvent.VK_W || tecla == KeyEvent.VK_E ||
+                                    tecla == KeyEvent.VK_A || tecla == KeyEvent.VK_S || tecla == KeyEvent.VK_D) {
+                                dialog.dispose();
+                            }
                         }
-                    }
-                });
+                    });
 
-                dialog.setFocusable(true);
-                dialog.setVisible(true);
+                    dialog.setFocusable(true);
+                    dialog.setVisible(true);
 
-                // Al cerrar, cargar siguiente nivel
-                nivelActual++;
-                panelJuego.removeAll();
-                cargarImagenesDesdeCarpetaExterna();
-                iniciarJuego(imagenes.length * 2);
-            } else {
-                JOptionPane.showMessageDialog(this, "¡Felicidades! Has completado todos los niveles.");
-                mostrarResumenFinal();
+                    // Al cerrar, cargar siguiente nivel
+                    nivelActual++;
+                    panelJuego.removeAll();
+                    cargarImagenesDesdeCarpetaExterna();
+                    iniciarJuego(imagenes.length * 2);
+                } else {
+                    JOptionPane.showMessageDialog(this, "¡Felicidades! Has completado todos los niveles.");
+                    mostrarResumenFinal();
+                }
             }
+        } else {
+            botones[primeroIndice].setIcon(null);
+            botones[segundoIndice].setIcon(null);
         }
-    } else {
-        botones[primeroIndice].setIcon(null);
-        botones[segundoIndice].setIcon(null);
+        primero = null;
     }
-    primero = null;
-}
 
 
     private void actualizarCursor() {
@@ -358,82 +394,81 @@ private void verificarPares(int segundoIndice) {
     }
 
     private void mostrarResumenFinal() {
-    long tiempoFinal = System.currentTimeMillis();
-    long tiempoJugadoMs = tiempoFinal - inicioJuego;
-    int segundos = (int) (tiempoJugadoMs / 1000);
-    LocalTime tiempo = LocalTime.ofSecondOfDay(segundos);
+        long tiempoFinal = System.currentTimeMillis();
+        long tiempoJugadoMs = tiempoFinal - inicioJuego;
+        int segundos = (int) (tiempoJugadoMs / 1000);
+        LocalTime tiempo = LocalTime.ofSecondOfDay(segundos);
 
-    Recursos resumen = new Recursos(
-        correoTutor,
-        contrasenaTutor,
-        puntajeFinal,
-        nivelAlcanzado,
-        LocalDate.now(),
-        tiempo
-    );
+        Recursos resumen = new Recursos(
+                correoTutor,
+                contrasenaTutor,
+                puntajeFinal,
+                nivelAlcanzado,
+                LocalDate.now(),
+                tiempo
+        );
 
-    JLabel label = new JLabel(resumen.toHtml());
-    label.setFont(new Font("Arial", Font.PLAIN, 16));
-    JOptionPane.showMessageDialog(this, label, "Resumen", JOptionPane.INFORMATION_MESSAGE);
+        JLabel label = new JLabel(resumen.toHtml());
+        label.setFont(new Font("Arial", Font.PLAIN, 16));
+        JOptionPane.showMessageDialog(this, label, "Resumen", JOptionPane.INFORMATION_MESSAGE);
 
-    System.exit(0);
-}
+        System.exit(0);
+    }
 
-    
+
     private int mostrarDialogoNivel(int nivel) {
-    JDialog dialog = new JDialog(this, "Siguiente Nivel", true); // Aquí se declara correctamente
-    dialog.setSize(350, 150);
-    dialog.setLocationRelativeTo(this);
-    dialog.setLayout(new BorderLayout());
+        JDialog dialog = new JDialog(this, "Siguiente Nivel", true); // Aquí se declara correctamente
+        dialog.setSize(350, 150);
+        dialog.setLocationRelativeTo(this);
+        dialog.setLayout(new BorderLayout());
 
-    JPanel mensaje = new JPanel(new GridLayout(2, 1));
-    mensaje.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-    mensaje.add(new JLabel("\u00a1Nivel " + nivel + " completo!", JLabel.CENTER));
-    mensaje.add(new JLabel("\u00bfDeseas continuar al siguiente nivel?", JLabel.CENTER));
-    dialog.add(mensaje, BorderLayout.CENTER);
+        JPanel mensaje = new JPanel(new GridLayout(2, 1));
+        mensaje.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        mensaje.add(new JLabel("\u00a1Nivel " + nivel + " completo!", JLabel.CENTER));
+        mensaje.add(new JLabel("\u00bfDeseas continuar al siguiente nivel?", JLabel.CENTER));
+        dialog.add(mensaje, BorderLayout.CENTER);
 
-    JPanel botones = new JPanel();
-    JButton btnSi = new JButton("Sí");
-    JButton btnNo = new JButton("No");
-    botones.add(btnSi);
-    botones.add(btnNo);
-    dialog.add(botones, BorderLayout.SOUTH);
+        JPanel botones = new JPanel();
+        JButton btnSi = new JButton("Sí");
+        JButton btnNo = new JButton("No");
+        botones.add(btnSi);
+        botones.add(btnNo);
+        dialog.add(botones, BorderLayout.SOUTH);
 
-    final int[] respuesta = {-1};
+        final int[] respuesta = {-1};
 
-    btnSi.addActionListener(e -> {
-        respuesta[0] = 0;
-        dialog.dispose();
-    });
-
-    btnNo.addActionListener(e -> {
-        respuesta[0] = 1;
-        dialog.dispose();
-    });
-
-    dialog.getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
-        .put(KeyStroke.getKeyStroke(KeyEvent.VK_Q, 0), "yes");
-    dialog.getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
-        .put(KeyStroke.getKeyStroke(KeyEvent.VK_E, 0), "no");
-
-    dialog.getRootPane().getActionMap().put("yes", new AbstractAction() {
-        public void actionPerformed(ActionEvent e) {
+        btnSi.addActionListener(e -> {
             respuesta[0] = 0;
             dialog.dispose();
-        }
-    });
+        });
 
-    dialog.getRootPane().getActionMap().put("no", new AbstractAction() {
-        public void actionPerformed(ActionEvent e) {
+        btnNo.addActionListener(e -> {
             respuesta[0] = 1;
             dialog.dispose();
-        }
-    });
+        });
 
-    dialog.setVisible(true);
-    return respuesta[0];
-}
+        dialog.getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
+                .put(KeyStroke.getKeyStroke(KeyEvent.VK_Q, 0), "yes");
+        dialog.getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
+                .put(KeyStroke.getKeyStroke(KeyEvent.VK_E, 0), "no");
 
+        dialog.getRootPane().getActionMap().put("yes", new AbstractAction() {
+            public void actionPerformed(ActionEvent e) {
+                respuesta[0] = 0;
+                dialog.dispose();
+            }
+        });
+
+        dialog.getRootPane().getActionMap().put("no", new AbstractAction() {
+            public void actionPerformed(ActionEvent e) {
+                respuesta[0] = 1;
+                dialog.dispose();
+            }
+        });
+
+        dialog.setVisible(true);
+        return respuesta[0];
+    }
 
 
     public static void main(String[] args) {
@@ -441,7 +476,7 @@ private void verificarPares(int segundoIndice) {
             Memorama m = new Memorama();
             m.setVisible(true);
         });
-        
+
 
     }
 }

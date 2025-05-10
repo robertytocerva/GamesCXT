@@ -24,7 +24,7 @@ public class Memorama extends JFrame {
     private int paresEncontrados = 0;
     private JButton primero = null;
     private int total;
-    private int idNino = -1;
+
 
 
     private int cursorFila = 0;
@@ -37,6 +37,8 @@ public class Memorama extends JFrame {
     private int puntajeFinal = 0;
     private int nivelAlcanzado = 1;
     private int nivelActual = 1;
+    private int idNino = -1;
+    private int id_juego = 2;
 
     public Memorama() {
         solicitarCredenciales();
@@ -399,6 +401,30 @@ public class Memorama extends JFrame {
         int segundos = (int) (tiempoJugadoMs / 1000);
         LocalTime tiempo = LocalTime.ofSecondOfDay(segundos);
 
+        String tiempoStr = tiempo.toString(); // formato HH:mm:ss
+        String nivelStr = "Nivel " + nivelAlcanzado;
+
+        SesionRequest sesion = new SesionRequest(
+                idNino,
+                id_juego,
+                tiempoStr,
+                nivelStr,
+                puntajeFinal
+        );
+
+        ApiService api = RetrofitClient.getApiService();
+        Call<Void> llamada = api.insertarSesion(sesion);
+        try {
+            Response<Void> resp = llamada.execute();
+            if (resp.isSuccessful()) {
+                System.out.println("Sesión registrada exitosamente.");
+            } else {
+                System.out.println("Error al registrar sesión: " + resp.code());
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         Recursos resumen = new Recursos(
                 correoTutor,
                 contrasenaTutor,
@@ -407,6 +433,7 @@ public class Memorama extends JFrame {
                 LocalDate.now(),
                 tiempo
         );
+        System.out.println(tiempo);
 
         JLabel label = new JLabel(resumen.toHtml());
         label.setFont(new Font("Arial", Font.PLAIN, 16));

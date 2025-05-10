@@ -11,5 +11,9 @@ public interface ApiService {
     @POST("buscarNino")
     Call<BuscarNinoResponse> buscarNinoId(@Body BuscarNinoRequest request);
 
+    @POST("insertarSesion")
+    Call<Void> insertarSesion(@Body SesionRequest sesion);
+
+
 
 }

@@ -31,6 +31,8 @@ public class Memorama extends JFrame {
     private int cursorColumna = 0;
     private final int columnas = 6;
 
+    private ApiService api = RetrofitClient.getApiService();
+
     private String correoTutor;
     private String contrasenaTutor;
     private long inicioJuego;
@@ -180,7 +182,7 @@ public class Memorama extends JFrame {
                 return;
             }
 
-            ApiService api = RetrofitClient.getApiService();
+
 
             // 1. Login
             LoginRequest login = new LoginRequest(correoTutor, contrasenaTutor);
@@ -412,7 +414,7 @@ public class Memorama extends JFrame {
                 puntajeFinal
         );
 
-        ApiService api = RetrofitClient.getApiService();
+
         Call<Void> llamada = api.insertarSesion(sesion);
         try {
             Response<Void> resp = llamada.execute();
@@ -420,6 +422,26 @@ public class Memorama extends JFrame {
                 System.out.println("Sesión registrada exitosamente.");
             } else {
                 System.out.println("Error al registrar sesión: " + resp.code());
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        // Datos para progreso
+        int nivelesDeProgreso = nivelAlcanzado; // Por ejemplo, sumamos 1 nivel por partida completada
+        int puntosTotales = puntajeFinal;
+
+        ProgresoRequest progreso = new ProgresoRequest(idNino, nivelesDeProgreso, puntosTotales);
+
+
+        Call<Void> llamadaProgreso = api.actualizarProgreso(progreso);
+
+        try {
+            Response<Void> resp = llamadaProgreso.execute();
+            if (resp.isSuccessful()) {
+                System.out.println("Progreso actualizado/insertado correctamente.");
+            } else {
+                System.out.println("Error al actualizar progreso: " + resp.code());
             }
         } catch (IOException e) {
             e.printStackTrace();

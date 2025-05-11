@@ -14,6 +14,9 @@ public interface ApiService {
     @POST("insertarSesion")
     Call<Void> insertarSesion(@Body SesionRequest sesion);
 
+    @POST("actualizarProgreso")
+    Call<Void> actualizarProgreso(@Body ProgresoRequest progreso);
+
 
 
 }

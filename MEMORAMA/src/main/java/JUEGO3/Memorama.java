@@ -83,7 +83,7 @@ public class Memorama extends JFrame {
         SwingUtilities.invokeLater(() -> requestFocusInWindow());
 
         ReproductorMusica musica = new ReproductorMusica();
-        musica.reproducir("imagenes/sonido.wav");
+        musica.reproducir("src/main/java/imagenes/sonido.wav");
     }
 
     private void solicitarCredenciales() {
@@ -99,7 +99,7 @@ public class Memorama extends JFrame {
         panelPrincipal.setBackground(azulFuerte);
 
         // Imagen lateral
-        ImageIcon originalIcon = new ImageIcon("imagenes/fondo.png");
+        ImageIcon originalIcon = new ImageIcon("src/main/java/imagenes/fondo.png");
         Image imagenEscalada = originalIcon.getImage().getScaledInstance(500, 500, Image.SCALE_SMOOTH);
         JLabel imagen = new JLabel(new ImageIcon(imagenEscalada));
         imagen.setPreferredSize(new Dimension(400, 600));
@@ -228,7 +228,7 @@ public class Memorama extends JFrame {
 
 
     private void cargarImagenesDesdeCarpetaExterna() {
-        String carpeta = "imagenes/nivel" + nivelActual + "/";
+        String carpeta = "src/main/java/imagenes/nivel" + nivelActual + "/";
         String[] nombres;
 
         if (nivelActual == 1) {
@@ -342,7 +342,7 @@ public class Memorama extends JFrame {
                 nivelAlcanzado = nivelActual;
                 int siguienteNivel = nivelActual + 1;
 
-                File carpetaSiguiente = new File("imagenes/nivel" + siguienteNivel);
+                File carpetaSiguiente = new File("src/main/java/imagenes/nivel" + siguienteNivel);
                 if (carpetaSiguiente.exists() && carpetaSiguiente.isDirectory()) {
                     // Mostrar aviso e iniciar nivel al presionar tecla
                     JDialog dialog = new JDialog(this, "Nivel Completado", true);

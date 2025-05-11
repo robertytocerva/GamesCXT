@@ -121,7 +121,7 @@ public class PantallaInicio  extends JFrame{
                             idNino = respuestaNino.body().getId_nino();
                             System.out.println("ID del niño: " + idNino);
                             dispose();
-                            lanzarJuego(correo, pass);
+                            lanzarJuego(correo, pass, idNino);
                             
                         } else {
                             JOptionPane.showMessageDialog(dialogo, "No se encontró un niño asociado a este correo.");
@@ -175,9 +175,9 @@ public class PantallaInicio  extends JFrame{
         return boton;
     }
 
-    private void lanzarJuego(String correo, String pass) {
+    private void lanzarJuego(String correo, String pass, int idNino) {
         JFrame frame = new JFrame("Mini Guitar Hero");
-        MiniGuitarHero game = new MiniGuitarHero(correo, pass);
+        MiniGuitarHero game = new MiniGuitarHero(correo, pass, idNino);
         frame.add(game);
         frame.setSize(900, 700);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

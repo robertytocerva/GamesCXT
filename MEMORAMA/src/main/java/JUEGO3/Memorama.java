@@ -87,19 +87,20 @@ public class Memorama extends JFrame {
     }
 
     private void solicitarCredenciales() {
-        JDialog dialogo = new JDialog(this, "Inicio de sesión - C X T", true);
+
+        JDialog dialogo = new JDialog(this, "MemoMovimiento - CXT", true);
         dialogo.setSize(850, 600);
         dialogo.setLocationRelativeTo(this);
         dialogo.setLayout(new BorderLayout());
 
-        Color azulFuerte = new Color(30, 60, 120);
+        Color azulFuerte = new Color(21, 127, 201);
         Color blanco = Color.WHITE;
 
         JPanel panelPrincipal = new JPanel(new BorderLayout());
         panelPrincipal.setBackground(azulFuerte);
 
         // Imagen lateral
-        ImageIcon originalIcon = new ImageIcon("src/main/java/imagenes/fondo.png");
+        ImageIcon originalIcon = new ImageIcon("src/main/java/imagenes/fondo2.png");
         Image imagenEscalada = originalIcon.getImage().getScaledInstance(500, 500, Image.SCALE_SMOOTH);
         JLabel imagen = new JLabel(new ImageIcon(imagenEscalada));
         imagen.setPreferredSize(new Dimension(400, 600));
@@ -111,7 +112,7 @@ public class Memorama extends JFrame {
         panelFormulario.setBorder(BorderFactory.createEmptyBorder(20, 30, 20, 30));
         panelFormulario.setBackground(azulFuerte);
 
-        JLabel titulo = new JLabel("¡Bienvenido al juego del Memorama!");
+        JLabel titulo = new JLabel("¡Bienvenido a MenoMovimineto!");
         titulo.setAlignmentX(Component.CENTER_ALIGNMENT);
         titulo.setFont(new Font("Arial", Font.BOLD, 20));
         titulo.setForeground(blanco);
@@ -448,8 +449,6 @@ public class Memorama extends JFrame {
         }
 
         Recursos resumen = new Recursos(
-                correoTutor,
-                contrasenaTutor,
                 puntajeFinal,
                 nivelAlcanzado,
                 LocalDate.now(),

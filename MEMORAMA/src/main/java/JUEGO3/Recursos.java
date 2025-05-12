@@ -11,9 +11,7 @@ public class Recursos {
     private LocalDate fecha;
     private LocalTime tiempoJugado;
 
-    public Recursos(String correoTutor, String contrasenaTutor, int puntajeFinal, int nivelAlcanzado, LocalDate fecha, LocalTime tiempoJugado) {
-        this.correoTutor = correoTutor;
-        this.contrasenaTutor = contrasenaTutor;
+    public Recursos( int puntajeFinal, int nivelAlcanzado, LocalDate fecha, LocalTime tiempoJugado) {
         this.puntajeFinal = puntajeFinal;
         this.nivelAlcanzado = nivelAlcanzado;
         this.fecha = fecha;
@@ -48,14 +46,10 @@ public class Recursos {
     public String toHtml() {
         return String.format(
             "<html><h2>=== RESUMEN DEL JUEGO ===</h2>" +
-            "<p><b>Correo:</b> %s<br>" +
-            "<b>Contraseña:</b> %s<br>" +
             "<b>Puntaje:</b> %d<br>" +
             "<b>Nivel alcanzado:</b> %d<br>" +
             "<b>Fecha:</b> %s<br>" +
             "<b>Tiempo Jugado:</b> %s</p></html>",
-            correoTutor,
-            contrasenaTutor,
             puntajeFinal,
             nivelAlcanzado,
             fecha.toString(),

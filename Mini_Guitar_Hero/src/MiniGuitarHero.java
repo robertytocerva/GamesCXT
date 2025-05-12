@@ -100,7 +100,7 @@ public class MiniGuitarHero extends JPanel implements ActionListener, KeyListene
         flechas[1] = new ImageIcon(getClass().getResource("/img/Arriba.png")).getImage();
         flechas[2] = new ImageIcon(getClass().getResource("/img/Abajo.png")).getImage();
         flechas[3] = new ImageIcon(getClass().getResource("/img/Derecha.png")).getImage();
-        fondo = new ImageIcon(getClass().getResource("/img/Pista.jpg")).getImage();
+        fondo = new ImageIcon(getClass().getResource("/img/Fondo_Pista2.png")).getImage();
         pista = new ImageIcon(getClass().getResource("/img/Fondo_Pista.jpeg")).getImage();
 
         cargarSonidos();
@@ -413,14 +413,14 @@ public class MiniGuitarHero extends JPanel implements ActionListener, KeyListene
     }
 
     private void mostrarResumenEnConsola() {
-        System.out.println("===== RESUMEN DE PARTIDA =====");
-        System.out.println("Correo ingresado: " + correoUsuario);
-        System.out.println("Contraseña ingresada: " + contraseñaUsuario);
-        System.out.println("Fecha de inicio: " + fechaInicio);
-        System.out.println("Puntaje total: " + puntajeTotal);
-        System.out.println("Nivel alcanzado: " + nivelSuperado);
-        System.out.println("Tiempo jugado: " + mostrarTiempo());
-        System.out.println("================================");
+//        System.out.println("===== RESUMEN DE PARTIDA =====");
+//        System.out.println("Correo ingresado: " + correoUsuario);
+//        System.out.println("Contraseña ingresada: " + contraseñaUsuario);
+//        System.out.println("Fecha de inicio: " + fechaInicio);
+//        System.out.println("Puntaje total: " + puntajeTotal);
+//        System.out.println("Nivel alcanzado: " + nivelSuperado);
+//        System.out.println("Tiempo jugado: " + mostrarTiempo());
+//        System.out.println("================================");
 
         String tiempoStr = mostrarTiempo(); // formato HH:mm:ss
         String nivelStr = "Nivel " + nivelSuperado;

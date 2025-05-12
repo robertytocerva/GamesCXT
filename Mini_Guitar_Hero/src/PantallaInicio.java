@@ -45,7 +45,7 @@ public class PantallaInicio  extends JFrame{
             @Override
             protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
-                Image fondo = new ImageIcon(getClass().getResource("/img/Fonfo_Menu.jpg")).getImage();
+                Image fondo = new ImageIcon(getClass().getResource("/img/Fonfo_MenuTR.png")).getImage();
                 g.drawImage(fondo, 0, 0, getWidth(), getHeight(), this);
             }
         };
@@ -72,7 +72,7 @@ public class PantallaInicio  extends JFrame{
             @Override
             protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
-                Image fondo = new ImageIcon(getClass().getResource("/img/Fondo_login.jpg")).getImage();
+                Image fondo = new ImageIcon(getClass().getResource("/img/Fonfo_MenuTR.png")).getImage();
                 g.drawImage(fondo, 0, 0, getWidth(), getHeight(), this);
             }
         };
